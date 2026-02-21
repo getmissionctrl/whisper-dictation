@@ -2,6 +2,7 @@
 Configuration management for whisper-dictation
 """
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -14,7 +15,7 @@ class Config:
 
     DEFAULT_CONFIG = {
         "hotkey": {"modifiers": ["super"], "key": "period"},  # super, ctrl, alt, shift
-        "whisper": {"model": "medium", "language": "en", "threads": 4},
+        "whisper": {"model": "base-en", "language": "en", "threads": 4},
         "ui": {"show_waveform": False, "theme": "dark"},  # Not implemented yet
         "processing": {
             "remove_filler_words": True,
@@ -83,17 +84,15 @@ class Config:
         return f"{mod_str}+{key.capitalize()}"
 
     def get_model_path(self) -> Path:
-        """Get path to whisper model"""
+        """Get path to moonshine model directory"""
+        # Primary: MOONSHINE_MODEL_DIR env var (set by Nix wrapper)
+        env_path = os.environ.get("MOONSHINE_MODEL_DIR")
+        if env_path:
+            return Path(env_path)
+
+        # Fallback: ~/.local/share/moonshine/models/{model_name}
         model_name = self.config["whisper"]["model"]
-        model_dir = Path.home() / ".local/share/whisper/models"
-        model_file = model_dir / f"ggml-{model_name}.bin"
-
-        # Fallback to old location
-        if not model_file.exists():
-            alt_dir = Path.home() / ".local/share/whisper-models"
-            model_file = alt_dir / f"ggml-{model_name}.bin"
-
-        return model_file
+        return Path.home() / ".local/share/moonshine/models" / model_name
 
     def get(self, key: str, default=None):
         """Get config value by dot-notation key"""

@@ -4,12 +4,16 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    moonshine.url = "path:../moonshine";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, moonshine }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+
+        moonshine-cli = moonshine.packages.${system}.moonshine-cli;
+        moonshine-pkg = moonshine.packages.${system}.moonshine;
 
         python = pkgs.python312;
         pythonEnv = python.withPackages (ps: with ps; [
@@ -31,7 +35,7 @@
 
           buildInputs = [
             pythonEnv
-            pkgs.whisper-cpp
+            moonshine-cli
             pkgs.ffmpeg
             pkgs.ydotool
             pkgs.libnotify
@@ -50,8 +54,9 @@
             makeWrapper ${pythonEnv}/bin/python3 $out/bin/whisper-dictation \
               --add-flags "-m whisper_dictation" \
               --set PYTHONPATH "$out/lib/whisper-dictation" \
+              --set MOONSHINE_MODEL_DIR ${moonshine-pkg}/share/moonshine/models/base-en \
               --prefix PATH : ${pkgs.lib.makeBinPath [
-                pkgs.whisper-cpp
+                moonshine-cli
                 pkgs.ffmpeg
                 pkgs.ydotool
                 pkgs.libnotify
@@ -85,7 +90,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs = [
             pythonEnv
-            pkgs.whisper-cpp
+            moonshine-cli
             pkgs.ffmpeg
             pkgs.ydotool
             pkgs.libnotify
@@ -100,7 +105,7 @@
           ];
 
           shellHook = ''
-            echo "🎤 Whisper Dictation Development Environment"
+            echo "Whisper Dictation Development Environment"
             echo "Run: python -m whisper_dictation.daemon"
             export PYTHONPATH="$PWD/src:$PYTHONPATH"
             export GI_TYPELIB_PATH="${pkgs.gtk4}/lib/girepository-1.0:${pkgs.glib.out}/lib/girepository-1.0:${pkgs.graphene}/lib/girepository-1.0:${pkgs.pango.out}/lib/girepository-1.0:${pkgs.harfbuzz}/lib/girepository-1.0:${pkgs.gdk-pixbuf}/lib/girepository-1.0:${pkgs.cairo}/lib/girepository-1.0:${pkgs.gobject-introspection}/lib/girepository-1.0"

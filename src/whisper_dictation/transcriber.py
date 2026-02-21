@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class WhisperTranscriber:
-    """Transcribes audio using whisper.cpp"""
+    """Transcribes audio using moonshine-cli"""
 
     def __init__(self, config):
         self.config = config
@@ -25,8 +25,8 @@ class WhisperTranscriber:
         """Transcribe audio file synchronously"""
         if not self.model_path.exists():
             raise FileNotFoundError(
-                f"Whisper model not found at {self.model_path}. "
-                f"Download with: whisper-cpp-download-ggml-model {self.config.get('whisper.model', 'medium')}"
+                f"Moonshine model not found at {self.model_path}. "
+                f"Set MOONSHINE_MODEL_DIR or install via Nix."
             )
 
         output_file = self.temp_dir / "transcription"
@@ -39,10 +39,10 @@ class WhisperTranscriber:
         logger.info(f"Transcribing with model: {self.model_path.name}")
 
         try:
-            # Run whisper-cli
+            # Run moonshine-cli
             result = subprocess.run(
                 [
-                    "whisper-cli",
+                    "moonshine-cli",
                     "-m",
                     str(self.model_path),
                     "-f",
@@ -62,7 +62,7 @@ class WhisperTranscriber:
             )
 
             if result.returncode != 0:
-                logger.error(f"Whisper failed: {result.stderr}")
+                logger.error(f"moonshine-cli failed: {result.stderr}")
                 return None
 
             # Read transcription

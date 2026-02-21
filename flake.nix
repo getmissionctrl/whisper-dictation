@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    moonshine.url = "path:../moonshine";
+    moonshine.url = "github:getmissionctrl/moonshine";
   };
 
   outputs = { self, nixpkgs, flake-utils, moonshine }:

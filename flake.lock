@@ -23,11 +23,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1771691228,
-        "narHash": "sha256-6ytt5k71y7vqvk9jZheg9r8va4rh6cAANkRg4fzSP6E=",
+        "lastModified": 1771693737,
+        "narHash": "sha256-LHHVx9i5078H9hYRxPb4U3CVhuBvPxDZ3jOEFBMZrR0=",
         "owner": "getmissionctrl",
         "repo": "moonshine",
-        "rev": "a735e244a2a47f9b9d7ea750acaf819bd4326754",
+        "rev": "f94dcf3e4be242b9897a77c2f42662be7a984607",
         "type": "github"
       },
       "original": {

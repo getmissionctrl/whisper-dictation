@@ -45,6 +45,8 @@ class WhisperTranscriber:
                     "moonshine-cli",
                     "-m",
                     str(self.model_path),
+                    "-a",
+                    "1",  # base architecture (model is base-en)
                     "-f",
                     str(audio_file),
                     "--output-txt",

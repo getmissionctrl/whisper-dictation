@@ -36,7 +36,9 @@ class WhisperTranscriber:
         if text_file.exists():
             text_file.unlink()
 
-        logger.info(f"Transcribing with model: {self.model_path.name}")
+        # Detect model architecture from directory name
+        arch = "0" if "tiny" in self.model_path.name else "1"
+        logger.info(f"Transcribing with model: {self.model_path.name} (arch={arch})")
 
         try:
             # Run moonshine-cli
@@ -46,7 +48,7 @@ class WhisperTranscriber:
                     "-m",
                     str(self.model_path),
                     "-a",
-                    "1",  # base architecture (model is base-en)
+                    arch,
                     "-f",
                     str(audio_file),
                     "--output-txt",

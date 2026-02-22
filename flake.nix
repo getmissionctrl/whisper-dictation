@@ -54,7 +54,7 @@
             makeWrapper ${pythonEnv}/bin/python3 $out/bin/whisper-dictation \
               --add-flags "-m whisper_dictation" \
               --set PYTHONPATH "$out/lib/whisper-dictation" \
-              --set MOONSHINE_MODEL_DIR ${moonshine-pkg}/share/moonshine/models/base-en \
+              --set-default MOONSHINE_MODEL_DIR ${moonshine-pkg}/share/moonshine/models/base-en \
               --prefix PATH : ${pkgs.lib.makeBinPath [
                 moonshine-cli
                 pkgs.ffmpeg
